@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'reservation',
+    'place',
+    'user',
+    
 ]
 
 MIDDLEWARE = [
@@ -82,7 +86,7 @@ DATABASES = {
     }
 }
 '''
-DATABASE = my_settings.DATABASES
+DATABASES = my_settings.DATABASES
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
