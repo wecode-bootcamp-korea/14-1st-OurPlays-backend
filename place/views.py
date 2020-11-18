@@ -34,4 +34,3 @@ class AddPlaceView(View):
         13. category_id
         14. user_id
         '''
-
