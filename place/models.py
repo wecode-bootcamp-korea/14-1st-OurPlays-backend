@@ -1,7 +1,7 @@
 from django.db import models
 
 class Category(models.Model):
-    name                        = models.CharField(max_length=50)
+    name                        = models.CharField(max_length=50, unique=True)
 
     class Meta:
         db_table = 'categories'
@@ -11,7 +11,7 @@ class Place(models.Model):
     price_per_hour              = models.IntegerField(default=10000)
     area                        = models.FloatField(default=0)
     floor                       = models.IntegerField(default=1)
-    maximun_parking_lot         = models.IntegerField(default=0)
+    maximum_parking_lot         = models.IntegerField(default=0)
     allowed_members_count       = models.IntegerField(default=1)
     description                 = models.TextField()
     using_rule                  = models.TextField()
@@ -44,7 +44,7 @@ class PlaceImage(models.Model):
         db_table = 'place_images'
 
 class Tag(models.Model):
-    name                        = models.CharField(max_length=50)
+    name                        = models.CharField(max_length=50, unique=True)
     created_at                  = models.DateTimeField(auto_now=True)
     places_tags                 = models.ManyToManyField(Place)
 

@@ -15,24 +15,24 @@ from my_settings import (
 def checkAuthDecorator(func):
     def wrapper(self, request, *args, **kwargs):
         try:
-            data    = json.loads(request.body)
-            token   = request.headers['token']
+            data      = json.loads(request.body)
+            token     = request.headers['token']
 
-            user_data   = jwt.decode(
-                                token, 
-                                SECRET['secret'], 
-                                algorithm = ALGORITHM['hash'],
+            user_data = jwt.decode(
+                                    token,
+                                    SECRET['secret'],
+                                    algorithm = ALGORITHM['hash'],
                                 )
 
-            if not User.objects.filter(id=user_data['user_id']).exists():
-                raise Exception()
+            if not User.objects.filter(id = user_data['user_id']).exists():
+                return JsonResponse({"message":"INVALID_TOKEN"}, status=400)
                 
             return func(self, request, *args, **kwargs)
             
         except json.JSONDecodeError:
             return JsonResponse({"message":"JSON_FORMAT_ERROR"}, status=400)
         except Exception:
-            return JsonResponse({"message":"INVALIABLE_REQUEST"}, status=400)
+            return JsonResponse({"message":"INVALID_REQUEST"}, status=400)
 
     return wrapper
 
