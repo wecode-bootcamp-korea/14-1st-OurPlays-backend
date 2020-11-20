@@ -6,6 +6,12 @@ class Category(models.Model):
     class Meta:
         db_table = 'categories'
 
+class Region(models.Model):
+    name = models.CharField(max_length=50)
+    
+    class Meta:
+        db_table = 'regions'
+
 class Place(models.Model):
     address                  = models.CharField(max_length=200)
     title                    = models.CharField(max_length=100,default='이뻐요')
@@ -27,12 +33,6 @@ class Place(models.Model):
 
     class Meta:
         db_table = 'places'
-
-class Region(models.Model):
-    name = models.CharField(max_length=50)
-    
-    class Meta:
-        db_table = 'regions'
 
 class Rating(models.Model):
 

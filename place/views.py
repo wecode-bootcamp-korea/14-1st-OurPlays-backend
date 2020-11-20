@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import json
 
 from django.http    import JsonResponse, HttpResponse
@@ -6,6 +5,29 @@ from django.views   import View
 
 from share.decorators   import checkAuthDecorator
 from .models            import Category, Place, Rating
+
+# # class MostPopularPlace(View):
+# # class PlaceJustRegistered(View):
+# class PlaceEvaluations(View):
+#     # @checkAuthDecorator
+#     def post(self,request):
+
+#         user_id = request.headers['token']
+#         user = User.objects.get(id=user_id)
+#         data = json.loads(request.body)
+#         try:
+#             user = User.objects.filter(name=data['name'],email=data['emali']])
+#             if user.exists():
+#                 Rating.object.create(
+#                     comment     = data['comment'],
+#                     place       = user.related_place_user.all().get(id=user_id).id,
+#                     user        = user_id
+#                     starpoint   = data['starpoint'],
+#                 )
+#                 return JsonResponse({'message':'SUCCESS'},status=200)
+        
+#         except User.DoesNotExist:
+#             return JsonResponse({'message':'DOSENOTEXIST'}, status=401)
 
 
 
@@ -52,8 +74,3 @@ class PlaceView(View):
 # class SlideView(View):
 # class BestShootingPlace(View):
 # class CategoryView(View):
-=======
-from django.shortcuts import render
-
-# Create your views here.
->>>>>>> main

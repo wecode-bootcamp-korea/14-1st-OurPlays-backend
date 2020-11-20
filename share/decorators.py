@@ -5,7 +5,7 @@ from django.http import JsonResponse
 
 from user.models import User
 
-from my_settings import SECRET, ALGORITHM
+from my_settings import SECRET_KEY, ALGORITHM
                 
 def checkAuthDecorator(func):
     def wrapper(self, request, *args, **kwargs):
@@ -14,7 +14,7 @@ def checkAuthDecorator(func):
             token   = request.headers['token']
             user_data   = jwt.decode(
                                 token, 
-                                SECRET['secret'], 
+                                SECRET_KEY['secret'], 
                                 algorithm = ALGORITHM['hash'],
                                 )
     
