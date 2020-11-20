@@ -4,7 +4,8 @@ from django.http    import JsonResponse, HttpResponse
 from django.views   import View 
 
 from share.decorators   import checkAuthDecorator
-from .models            import *
+from .models            import Category, Place, Rating
+
 
 
 class PlaceView(View):
@@ -17,7 +18,7 @@ class PlaceView(View):
         
         for place in places:
             rating_values = []
-            ratings = Rating.objects.filter(place_id = place.id).order_by("-created_at")
+            ratings = place.related_rating_place.all().order_by("-created_at")
 
             for rate in ratings:
                 rating_values.append(
@@ -28,7 +29,6 @@ class PlaceView(View):
                         "comments":rate.comment,
                     })
 
-            # grades_list = list(place.related_rating_place.all())
             result.append({
                 'category'              : place.category.name,
                 'title'                 : place.title,
@@ -47,17 +47,7 @@ class PlaceView(View):
             })
             
         return JsonResponse({'message':'SUCCESS','place':result}, status=200)
-        
-
-        
-
-
-
-
+    
 # class SlideView(View):
-
-
 # class BestShootingPlace(View):
-
-
 # class CategoryView(View):
