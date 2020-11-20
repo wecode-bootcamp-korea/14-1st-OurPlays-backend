@@ -4,15 +4,15 @@ import jwt
 from django.http import JsonResponse
 ​
 from user.models import (
-                        User,
-                    )
+    User,
+)
 from my_settings import (
-                        SECRET,
-                        ALGORITHM,
-                    )
+    SECRET,
+    ALGORITHM,
+)
 ​
 ​
-def checkAuthDecorator(func):
+def checkauth_decorator(func):
     def wrapper(self, request, *args, **kwargs):
         try:
             data      = json.loads(request.body)

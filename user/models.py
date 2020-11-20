@@ -1,13 +1,15 @@
 from django.db    import models
 
 class User(models.Model):
-    name          = models.CharField(max_length=100)
-    shoot_count   = models.IntegerField(default=0)
-    email         = models.EmailField(max_length=50)
-    password      = models.CharField(max_length=300)
-    introduce     = models.CharField(max_length=300, null=True, default="안녕하세요!")
-    thumbnail_url = models.URLField(max_length=1000, null=True)   
-    created_at    = models.DateTimeField(auto_now_add=True)
+    name                 = models.CharField(max_length=100)
+    shoot_count          = models.IntegerField(default=0)
+    email                = models.EmailField(max_length=50)
+    password             = models.CharField(max_length=300)
+    introduce            = models.CharField(max_length=300, default='안녕하세요')
+    agree_receive_email  = models.BooleanField(default=False)
+    agree_recommand_area = models.BooleanField(default=False)
+    thumbnail_url        = models.URLField(max_length=1000, null=True)   
+    created_at           = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         db_table = 'users'
