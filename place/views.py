@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import json
 
 from django.http    import JsonResponse, HttpResponse
@@ -51,3 +52,8 @@ class PlaceView(View):
 # class SlideView(View):
 # class BestShootingPlace(View):
 # class CategoryView(View):
+=======
+from django.shortcuts import render
+
+# Create your views here.
+>>>>>>> main
