@@ -1,7 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 urlpatterns = [
-    path('user',include('user.urls')),
-    path('place',include('place.urls')),
-    path('reservation',include('reservation.urls')),
 ]

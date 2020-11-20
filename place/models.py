@@ -13,7 +13,7 @@ class Region(models.Model):
         db_table = 'regions'
 
 class Place(models.Model):
-    address                  = models.CharField(max_length=200)
+    address                  = models.CharField(max_length=200,default='선릉10번출구')
     title                    = models.CharField(max_length=100,default='이뻐요')
     price_per_hour           = models.IntegerField(default=10000)
     area                     = models.FloatField(default=0)

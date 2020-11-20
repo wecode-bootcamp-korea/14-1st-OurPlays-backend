@@ -3,6 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,pycharm,visualstudio,macos,linux,django,venv
 
 my_settings.py
+ourplays_backup.txt
 
 ### Django ###
 *.log
