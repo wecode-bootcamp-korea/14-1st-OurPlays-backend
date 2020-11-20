@@ -8,7 +8,7 @@ class Category(models.Model):
 
 class Place(models.Model):
     address                     = models.CharField(max_length=200)
-    price_per_hour              = models.IntegerField(default=10000)
+    price_per_hour              = models.DecimalField(default=10000, max_digits=7, decimal_places=2)
     area                        = models.FloatField(default=0)
     floor                       = models.IntegerField(default=1)
     maximum_parking_lot         = models.IntegerField(default=0)
@@ -19,7 +19,11 @@ class Place(models.Model):
     minimum_rental_hour         = models.IntegerField(default=1)
     delegate_place_image_url    = models.CharField(max_length=200)
     surcharge_rule              = models.IntegerField(default=0)
-    user                        = models.ForeignKey('user.User',on_delete=models.CASCADE, related_name='related_place_user')
+    user                        = models.ForeignKey(
+                                                    'user.User',
+                                                    on_delete    = models.CASCADE,
+                                                    related_name = 'related_place_user'
+                                                    )
     category                    = models.ForeignKey(Category, on_delete=models.CASCADE)
     rating                      = models.ManyToManyField('user.User', through='Rating')
 
@@ -51,10 +55,10 @@ class Tag(models.Model):
     class Meta:
         db_table = 'tags'
 
-class InavilableBookingDay(models.Model):
+class InvalidBookingDay(models.Model):
     day                         = models.DateField()
     place                       = models.ForeignKey(Place,on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'inavilable_booking_days'
+        db_table = 'invalid_booking_days'
         
