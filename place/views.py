@@ -1,6 +1,6 @@
 import json
 import jwt
-import datetime
+from datetime import datetime
 from decimal import Decimal
 
 from django.core import serializers
@@ -52,14 +52,14 @@ class AddPlaceView(View):
                                     user_id                  = user_id,
                                 )
             
-            bulk_list = []
-
-            for image in data['images']:
-                bulk_list.append(PlaceImage( 
-                                            url      = image['url'],
-                                            place_id = place.id
-                                            ))
-            PlaceImage.objects.bulk_create(bulk_list)
+            PlaceImage.objects.bulk_create(
+                [
+                    PlaceImage( 
+                        url      = image['url'],
+                        place_id = place.id
+                    ) for image in data['images']
+                ]
+            )
 
             for tag in data['tags']:
                 target_tag = None
@@ -70,16 +70,17 @@ class AddPlaceView(View):
 
                 target_tag.places_tags.add(place)
 
-            bulk_list.clear()
-
-            for day in data['invalid_dates']:
-                bulk_list.append(InvalidBookingDay(
-                                            place_id = place.id,
-                                            day      = datetime.datetime.strptime(
-                                                                                day['date'],
-                                                                                '%Y-%m-%d'
-                                                                                )))
-            InvalidBookingDay.objects.bulk_create(bulk_list)
+            InvalidBookingDay.objects.bulk_create(
+                [
+                    InvalidBookingDay(
+                        place_id = place.id,
+                        day      = datetime.strptime(
+                                        day['date'],
+                                        '%Y-%m-%d'
+                                                    )
+                        ) for day in data['invalid_dates']
+                ]
+            )
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
@@ -93,12 +94,13 @@ class UpdatePlaceView(View):
         try:
             data                           = json.loads(request.body)
             token                          = request.headers['token']
+            user_id                        = token #get_value_from_token(token)
             categories                     = Category.objects.filter(name = data['category'])
             if not categories:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
              
             category                       = categories.get()
-            places                         = Place.objects.filter(id = data['id'])
+            places                         = Place.objects.filter(id = data['id'], user_id = user_id)
             if not places:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
 
@@ -119,15 +121,14 @@ class UpdatePlaceView(View):
             place.save()
 
             PlaceImage.objects.filter(place_id=place.id).delete()
-            
-            bulk_list = []
-
-            for image in data['images']:
-                bulk_list.append(PlaceImage( 
-                                            url      = image['url'],
-                                            place_id = place.id
-                                            ))
-            PlaceImage.objects.bulk_create(bulk_list)
+            PlaceImage.objects.bulk_create(
+                    [
+                        PlaceImage( 
+                            url      = image['url'],
+                            place_id = place.id
+                        ) for image in data['images']
+                    ]             
+                )
 
             for tag in data['tags']:
                 target_tag = None
@@ -139,17 +140,16 @@ class UpdatePlaceView(View):
                 target_tag.places_tags.add(place)
             
             InvalidBookingDay.objects.filter(place_id = place.id).delete()
-
-            bulk_list.clear()
-
-            for day in data['invalid_dates']:
-                bulk_list.append(InvalidBookingDay(
-                                        place_id = place.id,
-                                        day      = datetime.datetime.strptime(
-                                                                        day['date'],
-                                                                        '%Y-%m-%d'
-                                                                        )))
-            InvalidBookingDay.objects.bulk_create(bulk_list)
+            InvalidBookingDay.objects.bulk_create(
+                    [
+                        InvalidBookingDay(
+                            place_id  = place.id,
+                            day       = datetime.strptime(
+                                            day['date'],
+                                            '%Y-%m-%d')
+                            ) for day in data['invalid_dates']
+                    ]
+                )
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
@@ -165,8 +165,8 @@ class DeletePlaceView(View):
             token    = request.headers['token']
             place_id = data["id"]
             user_id  = token #get_value_from_token(token, 'user_id')
-
-            Place.objects.filter(id = place_id).delete()
+            
+            Place.objects.filter(id = place_id, user_id = user_id).delete()
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
