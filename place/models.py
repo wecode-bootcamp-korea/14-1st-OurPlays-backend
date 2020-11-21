@@ -51,10 +51,10 @@ class Tag(models.Model):
     class Meta:
         db_table = 'tags'
 
-class InavilableBookingDay(models.Model):
+class InvalidBookingDay(models.Model):
     day                         = models.DateField()
     place                       = models.ForeignKey(Place,on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'inavilable_booking_days'
+        db_table = 'invalid_booking_days'
         
