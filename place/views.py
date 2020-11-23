@@ -74,18 +74,15 @@ class AddPlaceView(View):
                 [
                     InvalidBookingDay(
                         place_id = place.id,
-                        day      = datetime.strptime(
-                                        day['date'],
-                                        '%Y-%m-%d'
-                                                    )
+                        day      = datetime.strptime(day['date'], '%Y-%m-%d')
                         ) for day in data['invalid_dates']
                 ]
             )
 
+            return JsonResponse({"message":"SUCCESS"}, status = 201)
+
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
-            
-        return JsonResponse({"message":"SUCCESS"}, status = 201)
         
 class UpdatePlaceView(View):
     @transaction.atomic
@@ -123,9 +120,8 @@ class UpdatePlaceView(View):
             PlaceImage.objects.filter(place_id=place.id).delete()
             PlaceImage.objects.bulk_create(
                     [
-                        PlaceImage( 
-                            url      = image['url'],
-                            place_id = place.id
+                        PlaceImage(
+                            url = image['url'], place_id = place.id
                         ) for image in data['images']
                     ]             
                 )
@@ -144,17 +140,15 @@ class UpdatePlaceView(View):
                     [
                         InvalidBookingDay(
                             place_id  = place.id,
-                            day       = datetime.strptime(
-                                            day['date'],
-                                            '%Y-%m-%d')
+                            day       = datetime.strptime(day['date'], '%Y-%m-%d')
                             ) for day in data['invalid_dates']
                     ]
                 )
 
+            return JsonResponse({"message":"SUCCESS"}, status = 201)
+
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
-
-        return JsonResponse({"message":"SUCCESS"}, status = 201)          
 
 class DeletePlaceView(View):
     @transaction.atomic
@@ -168,8 +162,9 @@ class DeletePlaceView(View):
             
             Place.objects.filter(id = place_id, user_id = user_id).delete()
 
+            return JsonResponse({"message":"SUCCESS"}, status = 201) 
+
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
 
-        return JsonResponse({"message":"SUCCESS"}, status = 201) 
 
