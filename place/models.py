@@ -30,7 +30,7 @@ class Rating(models.Model):
     starpoint  = models.FloatField(default = 0)
     comment    = models.TextField()
     created_at = models.DateTimeField(auto_now_add = True)
-    place      = models.ForeignKey(Place, on_delet = models.CASCADE, related_name = 'related_rating_place')
+    place      = models.ForeignKey(Place, on_delete = models.CASCADE, related_name = 'related_rating_place')
     user       = models.ForeignKey('user.User', on_delete = models.CASCADE)
 
     class Meta:
