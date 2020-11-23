@@ -5,17 +5,25 @@ class Category(models.Model):
 
     class Meta:
         db_table = 'categories'
+    
+class Region(models.Model):
+    name                        = models.CharField(max_length=20, unique=True)
+
+    class Meta:
+        db_table = 'regions'
 
 class Place(models.Model):
+    title                       = models.CharField(max_length=100)
+    region                      = models.ForeignKey(Region, on_delete=models.CASCADE)
     address                     = models.CharField(max_length=200)
     price_per_hour              = models.IntegerField(default=10000)
     area                        = models.FloatField(default=0)
     floor                       = models.IntegerField(default=1)
     maximum_parking_lot         = models.IntegerField(default=0)
     allowed_members_count       = models.IntegerField(default=1)
-    description                 = models.TextField()
-    using_rule                  = models.TextField()
-    info_nearby                 = models.TextField()
+    description                 = models.TextField(default='')
+    using_rule                  = models.TextField(default='')
+    info_nearby                 = models.TextField(default='')
     minimum_rental_hour         = models.IntegerField(default=1)
     delegate_place_image_url    = models.CharField(max_length=200)
     surcharge_rule              = models.IntegerField(default=0)

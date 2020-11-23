@@ -5,85 +5,105 @@ from django.db.models import Q
 from django.core import serializers
 from django.http import JsonResponse
 from django.views import View
+from django.db  import transaction
 
 from .models import (
                     Place,
                     PlaceImage,
                     Tag,
                     Category,
+                    Region,
                     )
 from user.models import User
 
-from share.decorators import checkAuthDecorator
-from share.utils import getValueFromToken
+from share.decorators import check_auth_decorator
 
 
 class AddPlaceView(View):
-    #@checkAuthDecorator
+    @transaction.atomic
+    @check_auth_decorator
     def post(self, request):
-        '''
-        11. delegate_place_image_url(실제론 이미지 파일이 날라오므로 이미지를 저장해야 함)
-        12. surcharge_rule (추가인원 옵션값(1,2,3))
-            옵션1. 추가인원이 할당인원보다 작을시(10명 수용인데 11~19명) : 50% 추가.
-            인원이 할당인원보다 2배 이상 3배 미만시                      : 100% 추가.
-            인원이 할당인원보다 3배 이상시                               : 150% 추가
-            옵션2. 인당 5500원/시간 추가
-            옵션3. 인당 11000원/시간 추가
-        '''
-
         try:
-            data    = json.loads(request.body)
-            token   = request.headers['token']
-            user_id = token #getValueFromToken(token, 'user_id')
+            data       = json.loads(request.body)
+            token      = request.headers['token']
+            user_id    = request.user
+            categories = Category.objects.filter(name = data['category'])
 
-            category = Category.objects.get(name = data['category'])
-            place = Place.objects.create(
-                        address                  = data['address'],
-                        price_per_hour           = data['price_per_hour'],
-                        area                     = data['area'],
-                        floor                    = data['floor'],
-                        maximum_parking_lot      = data['maximum_parking_lot'],
-                        allowed_members_count    = data['allowed_members_count'],
-                        description              = data['description'],
-                        using_rule               = data['using_rule'],
-                        info_nearby              = data['info_nearby'],
-                        minimum_rental_hour      = data['minimum_rental_hour'],
-                        delegate_place_image_url = data['delegate_place_image_url'],
-                        surcharge_rule           = data['surcharge_rule'],
-                        category_id              = category.id,
-                        user_id                  = user_id,
-                    )
-            
-            for image in data['images']:
-                PlaceImage( 
-                        url = image['url'],
+            if not categories:
+                return JsonResponse({"message":"NOT_EXIST"}, status=400)
+
+            category   = categories.get()
+            place      = Place.objects.create(
+                                    address                  = data['address'],
+                                    price_per_hour           = Decimal(data['price_per_hour']),
+                                    area                     = data['area'],
+                                    floor                    = data['floor'],
+                                    maximum_parking_lot      = data['maximum_parking_lot'],
+                                    allowed_members_count    = data['allowed_members_count'],
+                                    description              = data['description'],
+                                    using_rule               = data['using_rule'],
+                                    info_nearby              = data['info_nearby'],
+                                    minimum_rental_hour      = data['minimum_rental_hour'],
+                                    delegate_place_image_url = data['delegate_place_image_url'],
+                                    surcharge_rule           = data['surcharge_rule'],
+                                    category_id              = category.id,
+                                    user_id                  = user_id,
+                                )
+
+            PlaceImage.objects.bulk_create(
+                [
+                    PlaceImage(
+                        url      = image['url'],
                         place_id = place.id
-                        ).save()
+                    ) for image in data['images']
+                ]
+            )
 
             for tag in data['tags']:
-                Tag(
-                    name = tag['tag']
-                    ).save()
-            
-        except Exception as ex:
-            #return JsonResponse({"message":"INVALID_REQUEST"}, status = 400)
-            return JsonResponse({"message":ex}, status = 400)
+                target_tag = None
+                if not Tag.objects.filter(name = tag['tag']).exists():
+                    target_tag = Tag.objects.create(name = tag['tag'])
+                else:
+                    target_tag = Tag.objects.get(name = tag['tag'])
+
+                target_tag.places_tags.add(place)
+
+            InvalidBookingDay.objects.bulk_create(
+                [
+                    InvalidBookingDay(
+                        place_id = place.id,
+                        day      = datetime.strptime(
+                                        day['date'],
+                                        '%Y-%m-%d'
+                                                    )
+                        ) for day in data['invalid_dates']
+                ]
+            )
+
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status = 400)
 
         return JsonResponse({"message":"SUCCESS"}, status = 201)
         
 class UpdatePlaceView(View):
-    #@checkAuthDecorator
+    @transaction.atomic
+    @check_auth_decorator
     def post(self, request):
         try:
             data                           = json.loads(request.body)
-            token                          = request.headers['token']
-            category                       = Category.objects.get(name = data['category'])
-            
-            place                          = Place.objects.get(id = data['id'])
-            
+            user_id                        = request.user
+            categories                     = Category.objects.filter(name = data['category'])
+            if not categories:
+                return JsonResponse({"message":"NOT_EXIST"}, status=400)
+             
+            category                       = categories.get()
+            places                         = Place.objects.filter(id = data['id'], user_id = user_id)
+            if not places:
+                return JsonResponse({"message":"NOT_EXIST"}, status=400)
 
+            place                          = places.get()            
             place.address                  = data['address']
-            place.price_per_hour           = data['price_per_hour']
+            place.price_per_hour           = Decimal(data['price_per_hour'])
             place.area                     = data['area']
             place.floor                    = data['floor']
             place.maximum_parking_lot      = data['maximum_parking_lot']
@@ -97,45 +117,125 @@ class UpdatePlaceView(View):
             place.category_id              = category.id
             place.save()
 
-            PlaceImage.objects.filter(id=place.id).delete()
-            
-            for image in data['images']:
-                PlaceImage( 
-                        url = image['url'],
-                        place_id = place.id
-                        ).save()
+            PlaceImage.objects.filter(place_id=place.id).delete()
+            PlaceImage.objects.bulk_create(
+                    [
+                        PlaceImage( 
+                            url      = image['url'],
+                            place_id = place.id
+                        ) for image in data['images']
+                    ]             
+                )
 
             for tag in data['tags']:
+                target_tag = None
                 if not Tag.objects.filter(name = tag['tag']).exists():
-                    Tag(
-                        name = tag['tag']
-                        ).save()
+                    target_tag = Tag.objects.create(name = tag['tag'])
+                else:
+                    target_tag = Tag.objects.get(name = tag['tag'])
 
-        except self.model.DoesNotExist:
-            return JsonResponse({"message":"NOT_EXIST"}, status = 400)
+                target_tag.places_tags.add(place)
+            
+            InvalidBookingDay.objects.filter(place_id = place.id).delete()
+            InvalidBookingDay.objects.bulk_create(
+                    [
+                        InvalidBookingDay(
+                            place_id  = place.id,
+                            day       = datetime.strptime(
+                                            day['date'],
+                                            '%Y-%m-%d')
+                            ) for day in data['invalid_dates']
+                    ]
+                )
 
-        except Exception as ex:
-           #return JsonResponse({"message":"INVALID_REQUEST"}, status = 400)
-           return JsonResponse({"message":ex}, status = 400)
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status = 400)
 
-        return JsonResponse({"message":"SUCCESS"}, status = 201)          
+        return JsonResponse({"message":"SUCCESS"}, status = 201)
 
 class DeletePlaceView(View):
-    #@checkAuthDecorator
+    @transaction.atomic
+    @check_auth_decorator
     def post(self, request):
         try:
             data     = json.loads(request.body)
             token    = request.headers['token']
             place_id = data["id"]
-            user_id  = token #getValueFromToken(token, 'user_id')
+            user_id  = request.user
+            
+            Place.objects.filter(id = place_id, user_id = user_id).delete()
 
-            if not Place.objects.filter(user_id = user_id).exists():
-                return JsonResponse({"message":"NOT_EXIST"}, status = 400)
-
-            Place.objects.filter(id = place_id).delete()
-
-        except Exception:
-            return JsonResponse({"message":"INVALID_REQUEST"}, status = 400)
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status=400)
 
         return JsonResponse({"message":"SUCCESS"}, status = 201) 
+
+def get_place_info(places):
+    result = []
+    slider_index = 0;
+    
+    try:
+        for place in places:
+            result.append({
+                'id'                    : slider_index,     # frontend측 slider 기능 사용위한 요청 데이터
+                'place_id'              : place.id,
+                'user_name'              : User.objects.get(id = place.user_id).email,   # 향후 nickname 데이터로 변경 필요(우선 email 반영)
+                'category'              : place.category.name,
+                'title'                 : place.title,
+                'region'                : Region.objects.get(id = place.region_id).name,
+                'price'                 : place.price_per_hour,
+                'img_url'               : place.delegate_place_image_url,
+                'floor'                 : place.floor,
+                'maximun_parking_lot'   : place.minimum_rental_hour,
+                'allowed_members_count' : place.allowed_members_count,
+                'description'           : place.description,
+                'using_rule'            : place.using_rule,
+                'info_nearby'           : place.info_nearby,
+                'minimum_rental_hour'   : place.minimum_rental_hour,
+                'surcharge_rule'        : place.surcharge_rule,
+                'rating'                : [{
+                                                "id"         : rate.id,
+                                                "starpoint"  : rate.starpoint,
+                                                "user_name"  : rate.user.name,
+                                                "created_at" : rate.created_at,
+                                                "comments"   : rate.comment
+                                            } for rate in place.related_rating_place.all().order_by("-created_at")],
+
+                'images_urls'           : [{"url":image.url} for image in PlaceImage.objects.filter(place_id = place.id)],
+                'tags'                  : [{"tag":tag.name} for tag in Tag.objects.filter(places_tags__id = place.id)],
+            })
+
+            slider_index += 1
+
+    except KeyError:
+        return JsonResponse({"message":"KEY_ERROR"}, status=400)
+
+    return JsonResponse({'message':'SUCCESS','information':result}, status=200)   
+
+class GetPlaceView(View):
+    #@check_auth_decorator
+    def get(self, request):
+        #data = json.loads(request.body)
+        
+        return get_place_info(Place.objects.all()) 
+
+class GetDetailPlaceView(View):
+    #@check_auth_decorator
+    def get(self, request, place_id):
+        #data = json.loads(request.body)
+        
+        return get_place_info(Place.objects.filter(id = place_id))
+
+class GetPlaceWithCategoryView(View):
+    #@check_auth_decorator
+    def get(self, request, category):
+        #data = json.loads(request.body)
+        
+        categories  = Category.objects.filter(name = category)
+        if not categories.exists():
+            return JsonResponse({"message":"INVALID_CATEGORY"}, status=400)
+
+        places      = Place.objects.filter(category_id = categories.get().id)        
+        return get_place_info(places) 
+
 
