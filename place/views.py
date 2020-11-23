@@ -51,12 +51,7 @@ class AddPlaceView(View):
                                 )
 
             PlaceImage.objects.bulk_create(
-                [
-                    PlaceImage(
-                        url      = image['url'],
-                        place_id = place.id
-                    ) for image in data['images']
-                ]
+                [PlaceImage(url = image['url'], place_id = place.id) for image in data['images']]
             )
 
             for tag in data['tags']:
@@ -72,18 +67,15 @@ class AddPlaceView(View):
                 [
                     InvalidBookingDay(
                         place_id = place.id,
-                        day      = datetime.strptime(
-                                        day['date'],
-                                        '%Y-%m-%d'
-                                                    )
-                        ) for day in data['invalid_dates']
+                        day      = datetime.strptime(day['date'], '%Y-%m-%d')
+                    ) for day in data['invalid_dates']
                 ]
             )
 
+            return JsonResponse({"message":"SUCCESS"}, status = 201)
+
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
-
-        return JsonResponse({"message":"SUCCESS"}, status = 201)
         
 class UpdatePlaceView(View):
     @transaction.atomic
@@ -121,8 +113,7 @@ class UpdatePlaceView(View):
             PlaceImage.objects.bulk_create(
                     [
                         PlaceImage( 
-                            url      = image['url'],
-                            place_id = place.id
+                            url = image['url'], place_id = place.id
                         ) for image in data['images']
                     ]             
                 )
@@ -141,17 +132,15 @@ class UpdatePlaceView(View):
                     [
                         InvalidBookingDay(
                             place_id  = place.id,
-                            day       = datetime.strptime(
-                                            day['date'],
-                                            '%Y-%m-%d')
-                            ) for day in data['invalid_dates']
+                            day       = datetime.strptime(day['date'], '%Y-%m-%d')
+                        ) for day in data['invalid_dates']
                     ]
                 )
 
+            return JsonResponse({"message":"SUCCESS"}, status = 201)
+
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
-
-        return JsonResponse({"message":"SUCCESS"}, status = 201)
 
 class DeletePlaceView(View):
     @transaction.atomic
@@ -165,10 +154,10 @@ class DeletePlaceView(View):
             
             Place.objects.filter(id = place_id, user_id = user_id).delete()
 
+            return JsonResponse({"message":"SUCCESS"}, status = 201) 
+
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
-
-        return JsonResponse({"message":"SUCCESS"}, status = 201) 
 
 def get_place_info(places):
     result = []
@@ -177,9 +166,9 @@ def get_place_info(places):
     try:
         for place in places:
             result.append({
-                'id'                    : slider_index,     # frontend측 slider 기능 사용위한 요청 데이터
+                'id'                    : slider_index,                                 # frontend측 slider 기능 사용위한 요청 데이터
                 'place_id'              : place.id,
-                'user_name'              : User.objects.get(id = place.user_id).email,   # 향후 nickname 데이터로 변경 필요(우선 email 반영)
+                'user_name'             : User.objects.get(id = place.user_id).email,   # 향후 nickname 데이터로 변경 필요(우선 email 반영)
                 'category'              : place.category.name,
                 'title'                 : place.title,
                 'region'                : Region.objects.get(id = place.region_id).name,
@@ -200,42 +189,36 @@ def get_place_info(places):
                                                 "created_at" : rate.created_at,
                                                 "comments"   : rate.comment
                                             } for rate in place.related_rating_place.all().order_by("-created_at")],
-
                 'images_urls'           : [{"url":image.url} for image in PlaceImage.objects.filter(place_id = place.id)],
                 'tags'                  : [{"tag":tag.name} for tag in Tag.objects.filter(places_tags__id = place.id)],
             })
 
             slider_index += 1
 
+        return JsonResponse({'message':'SUCCESS','information':result}, status=200)   
+
     except KeyError:
         return JsonResponse({"message":"KEY_ERROR"}, status=400)
-
-    return JsonResponse({'message':'SUCCESS','information':result}, status=200)   
 
 class GetPlaceView(View):
     #@check_auth_decorator
     def get(self, request):
-        #data = json.loads(request.body)
-        
         return get_place_info(Place.objects.all()) 
 
 class GetDetailPlaceView(View):
     #@check_auth_decorator
     def get(self, request, place_id):
-        #data = json.loads(request.body)
-        
         return get_place_info(Place.objects.filter(id = place_id))
 
 class GetPlaceWithCategoryView(View):
     #@check_auth_decorator
     def get(self, request, category):
-        #data = json.loads(request.body)
-        
         categories  = Category.objects.filter(name = category)
         if not categories.exists():
             return JsonResponse({"message":"INVALID_CATEGORY"}, status=400)
 
         places      = Place.objects.filter(category_id = categories.get().id)        
+        
         return get_place_info(places) 
 
 
