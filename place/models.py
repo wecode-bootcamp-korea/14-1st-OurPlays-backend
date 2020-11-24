@@ -27,9 +27,9 @@ class Place(models.Model):
     minimum_rental_hour         = models.IntegerField(default = 1)
     delegate_place_image_url    = models.CharField(max_length = 200)
     surcharge_rule              = models.IntegerField(default = 0)
-    user                        = models.ForeignKey('user.User',on_delete = models.CASCADE, related_name = 'related_place_user')
+    user                        = models.ForeignKey('user.User', on_delete = models.CASCADE, related_name = 'related_place_user')
     category                    = models.ForeignKey(Category, on_delete = models.CASCADE)
-    rating                      = models.ManyToManyField('user.User', through = 'Rating')
+    ratings                     = models.ManyToManyField('user.User', through = 'Rating')
 
     class Meta:
         db_table = 'places'
@@ -38,11 +38,19 @@ class Rating(models.Model):
     starpoint  = models.FloatField(default=0)
     comment    = models.TextField()
     created_at = models.DateTimeField(auto_now_add = True)
-    place      = models.ForeignKey(Place, on_delete = models.CASCADE, related_name='related_rating_place')
+    place      = models.ForeignKey(Place, on_delete = models.CASCADE)
     user       = models.ForeignKey('user.User', on_delete = models.CASCADE)
+    #user       = models.ForeignKey('user.User', on_delete = models.CASCADE, null = True)
+    #non_member = models.ForeignKey(NonMember, on_delete = models.CASCADE, null = True)
 
     class Meta:
         db_table = 'ratings'
+
+class NonMember(models.Model):
+    user_name  = models.CharField(max_length = 50)
+
+    class Meta:
+        db_table = 'nonmember_ratings'
 
 class PlaceImage(models.Model):
     url   = models.URLField(max_length = 200)

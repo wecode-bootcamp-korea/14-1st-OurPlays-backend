@@ -13,6 +13,7 @@ from .models import (
                     Tag,
                     Category,
                     Region,
+                    Rating,
                     )
 from user.models import User
 
@@ -165,16 +166,20 @@ def get_place_info(places):
     
     try:
         for place in places:
+            user = User.objects.get(id = place.user_id)
+
             result.append({
-                'id'                    : slider_index,                                 # frontend측 slider 기능 사용위한 요청 데이터
+                'id'                    : slider_index,               # frontend측 slider 기능 사용위한 요청 데이터
                 'place_id'              : place.id,
-                'user_name'             : User.objects.get(id = place.user_id).email,   # 향후 nickname 데이터로 변경 필요(우선 email 반영)
+                'user_name'             : user.email,                 # 향후 nickname 데이터로 변경 필요(우선 email 반영)
+                'avatar_img'            : user.thumbnail_url, 
                 'category'              : place.category.name,
                 'title'                 : place.title,
                 'region'                : Region.objects.get(id = place.region_id).name,
                 'price'                 : place.price_per_hour,
                 'img_url'               : place.delegate_place_image_url,
                 'floor'                 : place.floor,
+                'area'                  : place.area,
                 'maximun_parking_lot'   : place.minimum_rental_hour,
                 'allowed_members_count' : place.allowed_members_count,
                 'description'           : place.description,
@@ -186,9 +191,10 @@ def get_place_info(places):
                                                 "id"         : rate.id,
                                                 "starpoint"  : rate.starpoint,
                                                 "user_name"  : rate.user.name,
+                                                "avatar_img" : rate.user.thumbnail_url,
                                                 "created_at" : rate.created_at,
                                                 "comments"   : rate.comment
-                                            } for rate in place.related_rating_place.all().order_by("-created_at")],
+                                            } for rate in Rating.objects.filter(place_id=place.id).order_by('-created_at')],
                 'images_urls'           : [{"url":image.url} for image in PlaceImage.objects.filter(place_id = place.id)],
                 'tags'                  : [{"tag":tag.name} for tag in Tag.objects.filter(places_tags__id = place.id)],
             })
@@ -220,5 +226,15 @@ class GetPlaceWithCategoryView(View):
         places      = Place.objects.filter(category_id = categories.get().id)        
         
         return get_place_info(places) 
+'''
+class AddRating(View):
+    @transaction.Atomic
+    #@check_auth_decorator
+    def post(self, request, place_id):
+        data = json.loads(request.body)
 
+        place = Place.objects.get(id = place_id)
 
+        #Rating.objects.create(
+        #place.rating.add(
+'''
