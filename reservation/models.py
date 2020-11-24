@@ -11,7 +11,7 @@ class Reservation(models.Model):
     begin_datetime         = models.DateTimeField()
     finish_datetime        = models.DateTimeField()
     guest_user             = models.ForeignKey('user.User', on_delete=models.CASCADE)
-    place_id               = models.ForeignKey('place.Place', on_delete=models.CASCADE)
+    place                  = models.ForeignKey('place.Place', on_delete=models.CASCADE)
     created_at             = models.DateTimeField(auto_now_add=True)
     status                 = models.ForeignKey(PayStatus, on_delete=models.CASCADE)
 

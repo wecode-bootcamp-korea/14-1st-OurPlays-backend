@@ -12,7 +12,7 @@ from my_settings import (
 )
 ​
 ​
-def checkauth_decorator(func):
+def checkAuthDecorator(func):
     def wrapper(self, request, *args, **kwargs):
         try:
             data      = json.loads(request.body)

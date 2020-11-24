@@ -31,7 +31,7 @@ class UserTag(models.Model):
 
 class SignupMotive(models.Model):
     user   = models.ForeignKey(User, on_delete=models.CASCADE)
-    motive = models.CharField(max_length=100)
+    motive = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'signup_motives'
