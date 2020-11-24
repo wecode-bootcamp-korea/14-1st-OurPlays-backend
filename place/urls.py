@@ -1,12 +1,9 @@
 from django.urls import path
 from .views import (
-                    AddPlaceView,
-                    UpdatePlaceView,
-                    DeletePlaceView,
+                    PlaceView,
                     )
 
 urlpatterns = [
-        path('/add_place', AddPlaceView.as_view()),
-        path('/update_place', UpdatePlaceView.as_view()),
-        path('/delete_place', DeletePlaceView.as_view()),
+        path('', CreatePlaceView.as_view()),
+        path('/<int:place_id>', UpdateDeletePlaceView.as_view()),
         ]

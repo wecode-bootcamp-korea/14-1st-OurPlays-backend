@@ -21,14 +21,13 @@ from share.decorators import check_auth_decorator
 from share.utils import get_value_from_token
 
 
-class AddPlaceView(View):
+class CreatePlaceView(View):
     @transaction.atomic
-    #@check_auth_decorator
     def post(self, request):
         try:
             data       = json.loads(request.body)
             token      = request.headers['token']
-            user_id    = token #get_value_from_token(token, 'user_id')            
+            user_id    = token            
             categories = Category.objects.filter(name = data['category'])
         
             if not categories:
@@ -62,12 +61,7 @@ class AddPlaceView(View):
             )
 
             for tag in data['tags']:
-                target_tag = None
-                if not Tag.objects.filter(name = tag['tag']).exists():
-                    target_tag = Tag.objects.create(name = tag['tag'])
-                else:
-                    target_tag = Tag.objects.get(name = tag['tag'])
-
+                target_tag, flag = Tag.objects.get_or_create(name = tag['tag'])
                 target_tag.places_tags.add(place)
 
             InvalidBookingDay.objects.bulk_create(
@@ -83,21 +77,20 @@ class AddPlaceView(View):
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
-        
-class UpdatePlaceView(View):
+    
+class UpdateDeletePlaceView(View):
     @transaction.atomic
-    #@check_auth_decorator
-    def post(self, request):
+    def patch(self, request, place_id):
         try:
             data                           = json.loads(request.body)
             token                          = request.headers['token']
-            user_id                        = token #get_value_from_token(token)
+            user_id                        = token
             categories                     = Category.objects.filter(name = data['category'])
             if not categories:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
              
             category                       = categories.get()
-            places                         = Place.objects.filter(id = data['id'], user_id = user_id)
+            places                         = Place.objects.filter(id = place_id, user_id = user_id)
             if not places:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
 
@@ -127,13 +120,8 @@ class UpdatePlaceView(View):
                 )
 
             for tag in data['tags']:
-                target_tag = None
-                if not Tag.objects.filter(name = tag['tag']).exists():
-                    target_tag = Tag.objects.create(name = tag['tag'])
-                else:
-                    target_tag = Tag.objects.get(name = tag['tag'])
-
-                target_tag.places_tags.add(place)
+                target_tag, flag = Tag.objects.get_or_create(name = tag['tag'])
+                target_tag.places.tags.add(place)
             
             InvalidBookingDay.objects.filter(place_id = place.id).delete()
             InvalidBookingDay.objects.bulk_create(
@@ -150,15 +138,12 @@ class UpdatePlaceView(View):
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
 
-class DeletePlaceView(View):
     @transaction.atomic
-    #@check_auth_decorator
-    def post(self, request):
+    def delete(self, quest, place_id):
         try:
             data     = json.loads(request.body)
             token    = request.headers['token']
-            place_id = data["id"]
-            user_id  = token #get_value_from_token(token, 'user_id')
+            user_id  = token
             
             Place.objects.filter(id = place_id, user_id = user_id).delete()
 
