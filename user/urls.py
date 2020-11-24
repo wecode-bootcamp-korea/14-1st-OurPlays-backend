@@ -5,5 +5,3 @@ urlpatterns = [
     path('/signup', SignUp.as_view()),
     path('/signin', SignIn.as_view()),
 ]
-
-cd

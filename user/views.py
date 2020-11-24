@@ -25,7 +25,7 @@ class SignUp(View):
             return JsonResponse({'message':'BAD_EMAIL_REQUEST'}, status=400)
             
         if not re.match(check_password, data['password']):
-            return JsonResponse({'message':'PASSWORD1_ERROR'}, status=400)
+            return JsonResponse({'message':'PASSWORD_ERROR'}, status=400)
         
         if not re.match(check_password, data['repassword']):
                 return JsonResponse({'message':'PASSWORD_ERROR'}, status=400)
@@ -50,10 +50,10 @@ class SignIn(View):
             if 'email' not in data or 'password' not in data:
                 return JsonResponse({'message':'CHECK_DATA'}, status=400)
 
-            if not User.objects.filter(emai l= data['email']).exists():
+            if not User.objects.filter(email=data['email']).exists():
                 return JsonResponse({'message':'INVALITD_USER'}, status=400)
 
-            user_data = User.objects.get(email = data['email'])
+            user_data = User.objects.get(email=data['email'])
 
             if bcrypt.checkpw(data['password'].encode('utf-8'), user_data.password.encode('utf-8')):
                 token = jwt.encode({'email':user_data.email}, SECRET_KEY['secret'], algorithm = ALGORITHM['hash']).decode('utf-8')

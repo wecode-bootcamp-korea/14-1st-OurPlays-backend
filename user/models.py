@@ -8,7 +8,7 @@ class User(models.Model):
     introduce            = models.CharField(max_length=300, default='안녕하세요')
     agree_receive_email  = models.BooleanField(default=False)
     agree_recommand_area = models.BooleanField(default=False)
-    thumbnail_url        = models.URLField(max_length=1000, null=True)   
+    thumbnail_url        = models.URLField(max_length=1000)   
     created_at           = models.DateTimeField(auto_now_add=True)
     
     class Meta:
