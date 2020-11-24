@@ -1,0 +1,25 @@
+id,name,email,password,shoot_count,introduce,agree_receive_email,agree_recommand_area,thumbnail_url,motives,place_mark,user_tag
+1,백승진,user1@wecode.com,Ourplays1!,0,introduce1,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4r7AKalu5pABDHe3kwtiGJh1s8KhbDorqqA&usqp=CAU,"naver, google",1,"찜, 사랑해"
+,,,,,,,,,,2,"ㅗㅜㅑ, 찜"
+,,,,,,,,,,3,"분위기 굿, 시골, 클래"
+2,김영주,user2@wecode.com,Ourplays1!,1,,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7E51tmHxujSQLzkC3ZZ_OmoqynSghQPmbYA&usqp=CAU,google,2,"과학적, 매혹"
+3,김영환,user3@wecode.com,Ourplays1!,3,,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,naver,3,
+,,,,,,,,,,5,
+4,김동하,user4@wecode.com,Ourplays1!,0,,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,daum,1,돈데기리기리
+,,,,,,,,,,3,돈데기리기리
+5,박영준,user5@wecode.com,Ourplays1!,0,,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,etc,4,
+6,백승진1,user6@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4r7AKalu5pABDHe3kwtiGJh1s8KhbDorqqA&usqp=CAU,,,
+7,김영주1,user7@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIOv8KecXXNw0PChyTFBj6LZFyW-5tzxIU9w&usqp=CAU,google,,
+8,김영환1,user8@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,naver,,
+9,김동하1,user9@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBVtrw01AM9oJidFPKQbmigHhqll_3ScuACg&usqp=CAU,daum,,
+10,박영준1,user10@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,etc,,
+11,백승진1,user11@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4r7AKalu5pABDHe3kwtiGJh1s8KhbDorqqA&usqp=CAU,,,
+12,김영주1,user12@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7E51tmHxujSQLzkC3ZZ_OmoqynSghQPmbYA&usqp=CAU,google,,
+13,김영환1,user13@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBVtrw01AM9oJidFPKQbmigHhqll_3ScuACg&usqp=CAU,naver,,
+14,김동하1,user14@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,daum,,
+15,박영준1,user15@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIOv8KecXXNw0PChyTFBj6LZFyW-5tzxIU9w&usqp=CAU,etc,,
+16,백승진1,user16@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4r7AKalu5pABDHe3kwtiGJh1s8KhbDorqqA&usqp=CAU,,,
+17,김영주1,user17@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7E51tmHxujSQLzkC3ZZ_OmoqynSghQPmbYA&usqp=CAU,google,,
+18,김영환1,user18@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,naver,,
+19,김동하1,user19@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBVtrw01AM9oJidFPKQbmigHhqll_3ScuACg&usqp=CAU,daum,,
+20,박영준1,user20@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,etc,,

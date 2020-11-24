@@ -1,0 +1,31 @@
+id,address,region,category,user,price_per_hour,area,floor,parking,members,description,using_rule,info_nearby,min_rent_hour,delegate_img,surcharge_rule,images,tags,invaild_booking_day,"rating(user_id, point, comment)",title
+1,서울1,서울,원룸,백승진,10000,20,1,1,4,Hello1,clean1,info1,2,t1.jpeg,1,"t1.jpeg, t2.jpeg","멋짐, 그뤠잇, 조용","2020-11-29, 2020-11-30","user1@wecode.com, 5.0, 멋있어요",서울의 1
+,,,,,,,,,,,,,,,,,,,"user2@wecode.com, 3.5",
+,,,,,,,,,,,,,,,,,,,"user3@wecode.com, 4.5",
+,,,,,,,,,,,,,,,,,,,"user4@wecode.com, 5.0",
+,,,,,,,,,,,,,,,,,,,"user5@wecode.com, 5.0, Great~~",
+,,,,,,,,,,,,,,,,,,,"user6@wecode.com, 1.5, 최악",
+,,,,,,,,,,,,,,,,,,,"user7@wecode.com, 5.0, 멋있어요!!",
+,,,,,,,,,,,,,,,,,,,"user8@wecode.com, 3.5",
+,,,,,,,,,,,,,,,,,,,"user9@wecode.com, 4.5, 끄악 눈부셧",
+,,,,,,,,,,,,,,,,,,,"user10@wecode.com, 1.0",
+,,,,,,,,,,,,,,,,,,,"user11@wecode.com, 2.5",
+,,,,,,,,,,,,,,,,,,,"user12@wecode.com, 4.0",
+,,,,,,,,,,,,,,,,,,,"user13@wecode.com, 5.0, 좋으네요",
+,,,,,,,,,,,,,,,,,,,"user14@wecode.com, 3.5",
+,,,,,,,,,,,,,,,,,,,"user15@wecode.com, 4.5",
+,,,,,,,,,,,,,,,,,,,"user16@wecode.com, 3.5",
+,,,,,,,,,,,,,,,,,,,"user17@wecode.com, 4.5",
+,,,,,,,,,,,,,,,,,,,"user18@wecode.com, 5.0, 찜이요",
+,,,,,,,,,,,,,,,,,,,"user19@wecode.com, 3.5, 찜이요2",
+,,,,,,,,,,,,,,,,,,,"user20@wecode.com, 4.5",
+2,서울시 강남구 테헤란로 427 위워크 타워(위워크 선릉 2호점),서울,사무실,백승진,100000,50,2,3,10,Hello2,clean2,info2,4,https://i.ibb.co/cDN1r5S/IMG-0648.jpg,2,"https://i.ibb.co/cDN1r5S/IMG-0643.jpg, https://i.ibb.co/cDN1r5S/IMG-0644.jpg, https://i.ibb.co/cDN1r5S/IMG-0649.jpg2",아지트,"2020-12-24, 2020-12-25",,위고두다
+3,서울2,서울,주택,박영준,15000,32,5,2,4,Hello3,clean3,info3,1,,1,t3.jpg,"아무나, 왁자지끌",,,서울의 2
+4,강원1,강원,주택,김영주,30000,16,1,2,5,Hello4,clean4,info4,2,,1,t32.jpg,헤헤,"2020-11-29, 2020-11-30",,강원의 1
+5,경기3,경기,원룸,김동하,12000,6,12,0,2,Hello5,clean5,info5,2,,3,t31.jpg,"아지트, 조용",,,경기의 1
+6,알려주면 알겠니???,경기,원룸,김동하,40000,30,3,3,10,소개하는 글입니다,규칙 설명해줘야 합니다,근처 설명합니다,1,https://i.pinimg.com/originals/be/1e/99/be1e9943743580285a9f86b131c76465.jpg,1,"https://i.pinimg.com/originals/be/1e/99/be1e9943743580285a9f86b131c76465.jpg, https://i.pinimg.com/564x/ce/f4/f8/cef4f8e2f270d3c588db6a6db040ffaf.jpg, https://i.pinimg.com/564x/ce/f4/f8/cef4f8e2f270d3c588db6a6db040ffaf.jpg","아지트, 조용","2020-11-29, 2020-11-30","user1@wecode.com, 2.5, 이루이루하이루22",오래된 원목 빌라 분위기있는 집
+,,,,,,,,,,,,,,,,,,,"user2@wecode.com, 1.5, 많이 좋아해!!",
+,,,,,,,,,,,,,,,,,,,"user3@wecode.com, 5.0, 안녕!!!!!",
+7,서울의 어느 히든 가든,서울,빌라,김동하,10000,25,5,1,10,소개하는 글입니다,규칙 설명해줘야 합니다,근처 설명합니다,2,https://s3.hourplace.co.kr/temp/images/2019/07/31/a426fe36-9732-3bca-aca0-dd9efebb3844.jpg,2,"https://i.pinimg.com/originals/be/1e/99/be1e9943743580285a9f86b131c76465.jpg, https://i.pinimg.com/564x/cd/18/5a/cd185a023cd3d62f1a9f8535895f8e2b.jpg, https://i.pinimg.com/564x/cd/18/5a/cd185a023cd3d62f1a9f8535895f8e2b.jpg",사랑스~,"2020-12-03, 2020-12-04, 2020-12-05","user1@wecode.com, 3.5, 이루이루하이루22",Little Forest. #1
+,,,,,,,,,,,,,,,,,,,"user4@wecode.com, 1.5, 많이 좋아해!!",
+,,,,,,,,,,,,,,,,,,,"user5@wecode.com, 5.0, 안녕!!!!!",
