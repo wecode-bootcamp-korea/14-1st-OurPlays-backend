@@ -31,8 +31,5 @@ def checkAuthDecorator(func):
             
         except json.JSONDecodeError:
             return JsonResponse({"message":"JSON_FORMAT_ERROR"}, status=400)
-        except Exception:
-            return JsonResponse({"message":"INVALID_REQUEST"}, status=400)
 
     return wrapper
-
