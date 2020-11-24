@@ -16,18 +16,16 @@ from .models import (
                     InvalidBookingDay,
                     )
 from user.models import User
-
 from share.decorators import check_auth_decorator
-from share.utils import get_value_from_token
 
 
 class CreatePlaceView(View):
     @transaction.atomic
+    @check_auth_decorator
     def post(self, request):
         try:
             data       = json.loads(request.body)
-            token      = request.headers['token']
-            user_id    = token            
+            user_id    = request.user            
             categories = Category.objects.filter(name = data['category'])
         
             if not categories:
@@ -80,11 +78,11 @@ class CreatePlaceView(View):
     
 class UpdateDeletePlaceView(View):
     @transaction.atomic
+    @check_auth_decorator
     def patch(self, request, place_id):
         try:
             data                           = json.loads(request.body)
-            token                          = request.headers['token']
-            user_id                        = token
+            user_id                        = request.user
             categories                     = Category.objects.filter(name = data['category'])
             if not categories:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
@@ -138,12 +136,12 @@ class UpdateDeletePlaceView(View):
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
 
+    @check_auth_decorator
     @transaction.atomic
     def delete(self, quest, place_id):
         try:
             data     = json.loads(request.body)
-            token    = request.headers['token']
-            user_id  = token
+            user_id  = request.user
             
             Place.objects.filter(id = place_id, user_id = user_id).delete()
 
