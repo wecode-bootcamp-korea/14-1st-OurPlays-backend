@@ -152,15 +152,15 @@ def gen_places():
 
             if row[19]:
                 arr         = row[19].strip().split(',')
-                email       = arr[0]
-                starpoint   = arr[1]
+                email       = arr[0].strip()
+                starpoint   = arr[1].strip()
                 comment     = ''
                 if len(arr) > 2:
-                    comment  = arr[2]
+                    comment  = arr[2].strip()
 
                 #print(f'{User.objects.filter(email=email.strip()).values("email")}, {email}')
                 
-                user  = User.objects.get(email = email.strip())
+                user  = User.objects.get(email = email)
                 place = Place.objects.get(id = place_id)
                 place.rating.add(user)
                 

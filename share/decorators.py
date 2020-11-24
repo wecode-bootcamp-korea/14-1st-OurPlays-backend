@@ -15,7 +15,6 @@ from my_settings import (
 def check_auth_decorator(func):
     def wrapper(self, request, *args, **kwargs):
         try:
-            data         = json.loads(request.body)
             token        = request.headers['token']
             user_data    = jwt.decode(
                                     token,

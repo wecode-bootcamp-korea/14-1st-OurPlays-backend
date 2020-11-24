@@ -20,9 +20,9 @@ from user.models import User
 from share.decorators import check_auth_decorator
 
 
-class AddPlaceView(View):
+class CreatePlaceView(View):
     @transaction.atomic
-    @check_auth_decorator
+    #@check_auth_decorator
     def post(self, request):
         try:
             data       = json.loads(request.body)
@@ -78,10 +78,10 @@ class AddPlaceView(View):
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
         
-class UpdatePlaceView(View):
+class UpdateDeletePlaceView(View):
     @transaction.atomic
-    @check_auth_decorator
-    def post(self, request):
+    #@check_auth_decorator
+    def patch(self, request):
         try:
             data                           = json.loads(request.body)
             user_id                        = request.user
@@ -143,10 +143,9 @@ class UpdatePlaceView(View):
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status = 400)
 
-class DeletePlaceView(View):
     @transaction.atomic
-    @check_auth_decorator
-    def post(self, request):
+    #@check_auth_decorator
+    def delete(self, request):
         try:
             data     = json.loads(request.body)
             token    = request.headers['token']
@@ -226,15 +225,43 @@ class GetPlaceWithCategoryView(View):
         places      = Place.objects.filter(category_id = categories.get().id)        
         
         return get_place_info(places) 
-'''
-class AddRating(View):
-    @transaction.Atomic
-    #@check_auth_decorator
-    def post(self, request, place_id):
-        data = json.loads(request.body)
 
-        place = Place.objects.get(id = place_id)
+class AddRatingView(View):
+    @transaction.atomic
+    @check_auth_decorator
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            
+            Rating.objects.create(
+                    user_id= request.user, 
+                    place_id= data['place_id'], 
+                    starpoint = data['starpoint'],
+                    comment = data['comment']
+            )
 
-        #Rating.objects.create(
-        #place.rating.add(
-'''
+            return JsonResponse({"message":"SUCCESS"}, status=201)
+
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status=400)
+
+class GetRatingView(View):
+    @transaction.atomic
+    @check_auth_decorator
+    def get(self, request, place_id):
+        try:
+            result = [
+                 {
+                        "id"         : rate.id,
+                        "starpoint"  : rate.starpoint,
+                        "user_name"  : rate.user.name,
+                        "avatar_img" : rate.user.thumbnail_url,
+                        "created_at" : rate.created_at,
+                        "comments"   : rate.comment
+                 } for rate in Rating.objects.select_related('user').filter(place_id = place_id)
+            ]
+
+            return JsonResponse({"message":"SUCCESS", "informations":result}, status=200)
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status=400)
+
