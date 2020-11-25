@@ -26,6 +26,8 @@ class Place(models.Model):
     minimum_rental_hour      = models.IntegerField(default=1)
     delegate_place_image_url = models.CharField(max_length=200)
     surcharge_rule           = models.IntegerField(default=0)
+    latitude                 = models.CharField(max_length = 300)
+    longitude                = models.CharField(max_length = 300)
     user                     = models.ForeignKey('user.User',on_delete=models.CASCADE,related_name='related_place_user')
     category                 = models.ForeignKey(Category,on_delete=models.CASCADE)
     region                   = models.ForeignKey(Region,on_delete=models.CASCADE)

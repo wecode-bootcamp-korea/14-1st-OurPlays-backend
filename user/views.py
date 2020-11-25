@@ -27,11 +27,11 @@ class SignUp(View):
         if not re.match(check_password, data['password']):
             return JsonResponse({'message':'PASSWORD1_ERROR'}, status=400)
         
-        #if not re.match(check_password, data['password2']):
-        #        return JsonResponse({'message':'PASSWORD1_ERROR'}, status=400)
+        if not re.match(check_password, data['password2']):
+                return JsonResponse({'message':'PASSWORD1_ERROR'}, status=400)
 
-        #if data['password'] != data['password2']:
-        #        return JsonResponse({'message':'PASSWORD_INCONSISTENCY'}, status=400)
+        if data['password'] != data['password2']:
+                return JsonResponse({'message':'PASSWORD_INCONSISTENCY'}, status=400)
                             
         if User.objects.filter(email = data['email']).exists():
              return JsonResponse({'message':'EXISTS_USER'}, status=400)
@@ -40,7 +40,6 @@ class SignUp(View):
             name          = data['name'],
             email         = data['email'],
             password      = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode(),
-            thumbnail_url = '',   
         )
 
         return JsonResponse({'message':'SUCCESS_SIGNUP'}, status=200)
