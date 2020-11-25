@@ -4,7 +4,7 @@ class User(models.Model):
     name                 = models.CharField(max_length=100)
     shoot_count          = models.IntegerField(default=0)
     email                = models.EmailField(max_length=50)
-    password             = models.CharField(max_length=50)
+    password             = models.CharField(max_length=300)
     introduce            = models.CharField(max_length=300)
     agree_receive_email  = models.BooleanField(default=False)
     agree_recommand_area = models.BooleanField(default=False)
