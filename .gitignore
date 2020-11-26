@@ -683,3 +683,4 @@ MigrationBackup/
 logs/
 data/
 *.csv
+db_uploader.py

@@ -286,22 +286,26 @@ class PlaceView(View):
             result = []
            
             if places:
+                index = 0
                 for place in places:
                     avg = 0.0
                     ratings = Rating.objects.filter(place_id=place.id)
                     if ratings:
                         avg = ratings.aggregate(Avg('starpoint'))
                         avg = round(avg['starpoint__avg'], 2)
-                    
+                   
                     result.append({
-                            'id'            : place.id,
+                            'id'            : index,
+                            'place_id'      : place.id,
                             'starpoint_avg' : avg,
                             'category'      : place.category.name,
                             'title'         : place.title,
                             'region'        : place.region.name,
                             'img_url'       : place.delegate_place_image_url,
                             'price_per_hour': place.price_per_hour,
+                            'ratings'       : Rating.objects.filter(place_id=place.id).count(),
                         })
+                    index += 1
             
             return JsonResponse({'message':'SUCCESS','information':result}, status=200)
         
