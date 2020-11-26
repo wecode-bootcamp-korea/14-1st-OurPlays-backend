@@ -22,7 +22,7 @@ def check_auth_decorator(func):
                                     algorithm = ALGORITHM['hash'],
                                     )
             request.user = user_data["user_id"]
-                
+
             return func(self, request, *args, **kwargs)
 
         except KeyError:
@@ -30,6 +30,4 @@ def check_auth_decorator(func):
         except jwt.exceptions.InvalidTokenError:
             return JsonResponse({"message":"INVALID_TOKEN"}, status=400)
 
-
     return wrapper
-

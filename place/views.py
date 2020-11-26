@@ -20,11 +20,9 @@ from .models import (
                     PlaceImage,
                     Tag,
                     Category,
-                    Region,
-                    Rating,
+                    InvalidBookingDay,
                     )
 from user.models import User
-
 from share.decorators import check_auth_decorator
 from share.kakaomap import getLatLng
 
@@ -34,7 +32,7 @@ class CreatePlaceView(View):
     @check_auth_decorator
     def post(self, request):
         try:
-            data        = request.POST
+            data       = json.loads(reqeust.body)
             categories = Category.objects.filter(name = data['category'])
 
             if not categories:
@@ -67,12 +65,7 @@ class CreatePlaceView(View):
             )
 
             for tag in data['tags']:
-                target_tag = None
-                if not Tag.objects.filter(name = tag['tag']).exists():
-                    target_tag = Tag.objects.create(name = tag['tag'])
-                else:
-                    target_tag = Tag.objects.get(name = tag['tag'])
-
+                target_tag, flag = Tag.objects.get_or_create(name = tag['tag'])
                 target_tag.places_tags.add(place)
 
             InvalidBookingDay.objects.bulk_create(
@@ -96,11 +89,13 @@ class UpdateDeletePlaceView(View):
         try:
             data                           = json.loads(request.body)
             categories                     = Category.objects.filter(name = data['category'])
+            
             if not categories:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
              
             category                       = categories.get()
             places                         = Place.objects.filter(id = data['id'], user_id = request_user)
+            
             if not places:
                 return JsonResponse({"message":"NOT_EXIST"}, status=400)
 
@@ -131,13 +126,8 @@ class UpdateDeletePlaceView(View):
                 )
 
             for tag in data['tags']:
-                target_tag = None
-                if not Tag.objects.filter(name = tag['tag']).exists():
-                    target_tag = Tag.objects.create(name = tag['tag'])
-                else:
-                    target_tag = Tag.objects.get(name = tag['tag'])
-
-                target_tag.places_tags.add(place)
+                target_tag, flag = Tag.objects.get_or_create(name = tag['tag'])
+                target_tag.places.tags.add(place)
             
             InvalidBookingDay.objects.filter(place_id = place.id).delete()
             InvalidBookingDay.objects.bulk_create(
@@ -230,9 +220,10 @@ class GetPlaceWithCategoryView(View):
     @check_auth_decorator
     def get(self, request, category):
         categories  = Category.objects.filter(name = category)
+        
         if not categories.exists():
             return JsonResponse({"message":"INVALID_CATEGORY"}, status=400)
-
+       
         places      = Place.objects.filter(category_id = categories.get().id)        
         
         return get_place_info(places) 
@@ -260,7 +251,6 @@ class AddRatingView(View):
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
-
 
 class RemoveRatingView(View):
     @transaction.atomic
