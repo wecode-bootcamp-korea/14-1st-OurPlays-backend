@@ -7,8 +7,8 @@ urlpatterns =[
     path('reviews/<int:place_id>',ReviewsView.as_view()),
     path('review/<int:rating_id>',ReviewView.as_view()),
     path('',SearchView.as_view()),
-    path('category/<int:category_id>',PlaceDetailView.as_view()),
-    path('<int:category_id>',PlacesView.as_view()),
+    path('place/<int:place_id>',PlaceDetailView.as_view()),
+    path('places/<int:category_id>',PlacesView.as_view()),
 
 
 ]  

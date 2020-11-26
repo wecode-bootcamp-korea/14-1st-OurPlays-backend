@@ -4,7 +4,6 @@
 
 my_settings.py
 ourplays_backup.txt
-share/kakaomap.py
 data
 db_delete.py
 db_uploader.py

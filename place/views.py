@@ -3,11 +3,11 @@ import jwt
 from datetime           import datetime
 from decimal            import Decimal
 
-from django.core        import serializers
-from django.http        import JsonResponse, HttpResponse 
-from django.views       import View 
-from django.db.models   import Q, Avg
-from django.db          import transaction
+from django.core            import serializers
+from django.http            import JsonResponse, HttpResponse 
+from django.views           import View 
+from django.db.models       import Q, Avg
+from django.db              import transaction
 
 from share.kakaomap     import getLatLng
 from share.decorators   import checkAuthDecorator
@@ -107,19 +107,19 @@ class SearchView(View):
 
 class PlaceDetailView(View):
     # Place 모든 정보
-    def get(self,request,category_id):
-        #data = json.loads(request.body)
-        category = Category.objects.get(id=category_id)
-        places = Place.objects.filter(category_id=category.id)
-        result = []
-        
-        for place in places:
+    def get(self,request,place_id):
+        try:
+            place = Place.objects.get(id=place_id)
             rating_values = []
             ratings = place.related_rating_place.all().order_by("-created_at")
-
+            starpoint_count = ratings.count()
+            result = []
+            point_sum = 0 
             for rate in ratings:
+                point_sum += rate.starpoint
                 rating_values.append(
                     {
+                        
                         "starpoint":rate.starpoint,
                         "user_name":rate.user.name,
                         "created_at":rate.created_at,
@@ -141,32 +141,38 @@ class PlaceDetailView(View):
                 'surcharge_rule'        : place.surcharge_rule,
                 'latitude'              : getLatLng(place.address)[0],
                 'longitude'             : getLatLng(place.address)[1],
+                'starpoint_avg'         : point_sum/starpoint_count,
                 'rating'                : rating_values,
-                
-
             })
             
-        return JsonResponse({'message':'SUCCESS','place':result}, status=200)
+            return JsonResponse({'message':'SUCCESS','place':result}, status=200)
+        
+        except Category.DoesNotExist:
+            return JsonResponse({"message":"NOT_EXIST"}, status=404)
 
 class PlacesView(View):
     def get(self,request,category_id):
-        category = Category.objects.get(id=category_id)
-        places = Place.objects.filter(category_id=category.id)
-        result = []
+        try:
+            category = Category.objects.get(id=category_id)
+            places = Place.objects.filter(category_id=category.id)
+            result = []
+            for place in places:
+                ratings = Rating.objects.select_related('place').filter(place_id=place.id)
+                rating_info = ratings.all().values('place_id').annotate(avg = Avg('starpoint'))
+                result.append({
+                        'rating_avg'    : rating_info.first()['avg'],  
+                        'category'      : place.category.name,
+                        'title'         : place.title,
+                        'region'        : place.region.name,
+                        'img_url'       : place.delegate_place_image_url,
+                        'price_per_hour': place.price_per_hour,
+                    })
+            
+            return JsonResponse({'message':'SUCCESS','place':result}, status=200)
         
-        for place in places:
-            ratings = Rating.objects.select_related('place').filter(place_id=place.id)
-            rating_info = ratings.all().values('place_id').annotate(avg = Avg('starpoint'))
-            result.append({
-                    'rating_avg' : rating_info.first()['avg'],  
-                    'category'   : place.category.name,
-                    'title'      : place.title,
-                    'region'     : place.region.name,
-                    'img_url'    : place.delegate_place_image_url,
-                })
-        
-        return JsonResponse({'message':'SUCCESS','place':result}, status=200)
-    
+        except Category.DoesNotExist:
+            return JsonResponse({"message":"NOT_EXIST"}, status=404)
+
 class CreatePlaceView(View):
     #@transaction.atomic
     @checkAuthDecorator
