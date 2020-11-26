@@ -162,7 +162,7 @@ def gen_places():
                 
                 user  = User.objects.get(email = email)
                 place = Place.objects.get(id = place_id)
-                place.rating.add(user)
+                place.ratings.add(user)
                 
                 rating           = Rating.objects.get(place_id = place_id, user_id = user.id)
                 rating.starpoint = float(starpoint)

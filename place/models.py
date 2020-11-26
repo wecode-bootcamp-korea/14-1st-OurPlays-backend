@@ -16,6 +16,8 @@ class Place(models.Model):
     title                       = models.CharField(max_length = 100)
     region                      = models.ForeignKey(Region, on_delete = models.CASCADE)
     address                     = models.CharField(max_length = 200)
+    latitude                    = models.FloatField(default=0.0)
+    longtitude                  = models.FloatField(default=0.0)
     price_per_hour              = models.IntegerField(default = 10000)
     area                        = models.FloatField(default = 0)
     floor                       = models.IntegerField(default = 1)
@@ -40,17 +42,9 @@ class Rating(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     place      = models.ForeignKey(Place, on_delete = models.CASCADE)
     user       = models.ForeignKey('user.User', on_delete = models.CASCADE)
-    #user       = models.ForeignKey('user.User', on_delete = models.CASCADE, null = True)
-    #non_member = models.ForeignKey(NonMember, on_delete = models.CASCADE, null = True)
 
     class Meta:
         db_table = 'ratings'
-
-class NonMember(models.Model):
-    user_name  = models.CharField(max_length = 50)
-
-    class Meta:
-        db_table = 'nonmember_ratings'
 
 class PlaceImage(models.Model):
     url   = models.URLField(max_length = 200)

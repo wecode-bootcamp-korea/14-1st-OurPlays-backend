@@ -6,7 +6,10 @@ from .views import (
                     GetDetailPlaceView,
                     GetPlaceWithCategoryView,
                     AddRatingView,
-                    GetRatingView,
+                    GetRatingsView,
+                    RemoveRatingView,
+                    PlacesFromCategoryView,
+                    SearchView,
                     )
 
 urlpatterns = [
@@ -18,5 +21,8 @@ urlpatterns = [
         path('/ProductDetail/<int:place_id>', GetDetailPlaceView.as_view()),
         path('/ProductDetail/<str:category>', GetPlaceWithCategoryView.as_view()),
         path('/rating', AddRatingView.as_view()),
-        path('/<int:place_id>/ratings', GetRatingView.as_view()),
+        path('/<int:place_id>/ratings', GetRatingsView.as_view()),
+        path('/rating/<int:rating_id>', RemoveRatingView.as_view()),        
+        path('/places/<int:category_id>', PlacesFromCategoryView.as_view()),
+        path('/search/<str:search_text>', SearchView.as_view()),
         ]                

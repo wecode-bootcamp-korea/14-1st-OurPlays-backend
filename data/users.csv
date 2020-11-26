@@ -23,3 +23,4 @@ id,name,email,password,shoot_count,introduce,agree_receive_email,agree_recommand
 18,김영환1,user18@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,naver,,
 19,김동하1,user19@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBVtrw01AM9oJidFPKQbmigHhqll_3ScuACg&usqp=CAU,daum,,
 20,박영준1,user20@wecode.com,Ourplays1!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,etc,,
+21,김동하1,tokenTest@test.com,A12345678!,0,안녕!!!,0,0,https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFL5jonyCNC78_Ao6k1IXgS1JdSAFnJhR-bQ&usqp=CAU,etc,,

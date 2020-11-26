@@ -6,10 +6,21 @@ import bcrypt
 from django.db import models
 from django.http import JsonResponse
 from django.views import View
-from django.db.models import Q
+from django.db.models import (
+                                Q,
+                                Count
+                            )
 from my_settings import SECRET, ALGORITHM
 
-from .models import User
+from .models import (
+                    User,
+                    PlaceMark,
+                    )
+from place.models import (
+                            Place,
+                            Rating
+                        )
+from share.decorators import check_auth_decorator
 
 class SignUpView(View):
     def post(self, request):
@@ -71,3 +82,55 @@ class SignInView(View):
         
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=401)
+
+class MarkingPlaceView(View):
+    @check_auth_decorator
+    def post(self, request):
+        try:
+            data        = json.loads(request.body)
+            place_id    = data["place_id"]
+            place_marks = PlaceMark.objects.filter(place_id = place_id, user_id = request.user)
+            
+            if place_marks:
+                place_marks.delete()
+            else:
+                PlaceMark.objects.create(place_id = place_id, user_id = request.user)
+
+            return JsonResponse({"message":"SUCCESS"}, status = 201)
+
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status=400)
+
+class GetMarkedPlacesView(View):
+    @check_auth_decorator
+    def get(self, request):
+        try:            
+            offset = int(request.GET.get('offset', 0))
+            limit  = int(request.GET.get('limit', PlaceMark.objects.filter(user_id = request.user).count()))
+
+            result = [
+                {
+                    'id'        : place_mark.place.id,
+                    'title'     : place_mark.place.title,
+                    'img_url'   : place_mark.place.delegate_place_image_url,
+                    'category'  : place_mark.place.category.name,
+                    'region'    : place_mark.place.region.name,
+                    'price'     : place_mark.place.price_per_hour,
+                    'ratings'   : [{
+                                        "id"         : rate.id,
+                                        "starpoint"  : rate.starpoint,
+                                        "user_name"  : rate.user.name,
+                                        "avatar_img" : rate.user.thumbnail_url,
+                                        "created_at" : rate.created_at,
+                                        "comments"   : rate.comment
+                                    } for rate in Rating.objects.filter(place_id = place_mark.place.id)
+                                        .order_by('-created_at')]
+                    } for place_mark in PlaceMark.objects.select_related('place').filter(user_id = request.user)[offset:offset+limit]
+            ]
+
+            return JsonResponse({"message":"SUCCESS", "information":result}, status = 201)
+
+        except KeyError:
+            return JsonResponse({"message":"KEY_ERROR"}, status=400)
+
+
