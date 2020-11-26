@@ -106,7 +106,7 @@ class GetMarkedPlacesView(View):
     def get(self, request):
         try:            
             offset = int(request.GET.get('offset', 0))
-            limit  = int(request.GET.get('limit', PlaceMark.objects.filter(user_id = request.user).count()))
+            limit  = int(request.GET.get('limit', 20))
 
             result = [
                 {

@@ -11,86 +11,6 @@ from .models import (
                     )
 from place.models import Place
 
-'''
-class GetReservationsView(View):
-    def calculate_total_price(self, reservation):
-        place            = Place.objects.get(id = reservation.place_id)
-        overflow_members = place.allowed_members_count - reservation.shooting_members_count
-        shooting_hours   = (reservation.finish_datetime - reservation.begin_datetime).seconds / 3600
-        surcharge_pay    = 0
-
-        if overflow_members > 0:
-            if place.surcharge_rule == 2:
-                surcharge_pay = overflow_members * shooting_hours * 5500
-            elif place.surcharge_rule == 3:
-                surcharge_pay = overflow_members * shooting_hours * 11000
-            else:
-                price_per_hour = place.allowed_members_count * place.price_per_hour
-                surcharge_pay = price_per_hour * shooting_hours
-
-                if overflow_members < place.allowed_members_count * 2:
-                    surcharge_pay = surcharge_pay + (surcharge_pay / 2)
-                elif overflow_members < place.allowed_members_count * 3:
-                    surcharge_pay = surcharge_pay * 2
-                elif overflow_members >= place.allowed_members_count * 3:
-                    surcharge_pay = surcharge_pay + (surcharge_pay * 1.5)
-
-        return surcharge_pay
-
-    @check_auth_decorator
-    def get(self, request):
-        try:            
-            result = [
-                    {
-                        'id'                     : reservation.id,
-                        'img_url'                : reservation.place.delegate_place_image_url,
-                        'place_id'               : reservation.place_id,
-                        'shooting_members_count' : reservation.shooting_members_count,
-                        'begin_datetime'         : reservation.begin_datetime,
-                        'finish_datetime'        : reservation.finish_datetime,
-                        'total_price'            : self.calculate_total_price(reservation),
-                        'created_at'             : reservation.created_at,
-                        'status'                 : reservation.status.status,
-                    } for reservation in Reservation.objects.select_related('place', 'status').filter(guest_user_id = request.user)
-            ]
-
-            return JsonResponse({"message":"SUCCESS", "information":result}, status=200)
-
-        except KeyError:
-            return JsonResponse({"message":"KEY_ERROR"}, status=400)
-'''
-'''
-class GenerateView(View):
-    @transaction.atomic
-    @check_auth_decorator
-    def post(self, request):
-        try:            
-            data    = json.loads(request.body)
-            user_id = request.user
-
-            #begin  = datetime.strptime(data["begin_datetime"], '%Y-%m-%d %H:%M:%S') 
-            #finish = begin + datetime.timedelta(hours = int(data["shooting_hour"]))
-
-            begin_datetime = f'{data["begin_date"]} {data["begin_time"]}'
-            finish_datetime = f'{data["finish_date"]} {data["finish_time"]}'
-            begin = datetime.strptime(begin_datetime, '%Y-%m-%d %H:%M')
-            finish = datetime.strptime(finish_datetime, '%Y-%m-%d %H:%M')
-
-            Reservation(
-                        shooting_members_count = data["shooting_members_count"],
-                        begin_datetime         = begin,                        
-                        finish_datetime        = finish,
-                        place_id               = data["place_id"],
-                        status_id              = 1,
-                        guest_user_id          = user_id,
-                    ).save()
-
-            return JsonResponse({"message":"SUCCESS"}, status=201)
-
-        except KeyError:
-            return JsonResponse({"message":"KEY_ERROR"}, status=400)
-'''
-
 @transaction.atomic
 @check_auth_decorator
 def update_reservation_status(request, status):
@@ -140,9 +60,6 @@ class ReservationView(View):
             data    = json.loads(request.body)
             user_id = request.user
 
-            #begin  = datetime.strptime(data["begin_datetime"], '%Y-%m-%d %H:%M:%S') 
-            #finish = begin + datetime.timedelta(hours = int(data["shooting_hour"]))
-
             begin_datetime = f'{data["begin_date"]} {data["begin_time"]}'
             finish_datetime = f'{data["finish_date"]} {data["finish_time"]}'
             begin = datetime.strptime(begin_datetime, '%Y-%m-%d %H:%M')
@@ -166,7 +83,7 @@ class ReservationView(View):
     def get(self, request):
         try:            
             offset = int(request.GET.get('offset', 0))
-            limit  = int(request.GET.get('limit', int(Reservation.objects.filter(guest_user_id = request.user).count())))
+            limit  = int(request.GET.get('limit', 20))
 
             result = [
                     {

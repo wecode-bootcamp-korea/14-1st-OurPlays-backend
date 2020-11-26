@@ -104,7 +104,7 @@ def gen_places():
                 address                  = row[1],
                 region_id                = Region.objects.get(name=row[2]).id,
                 category_id              = Category.objects.get(name=row[3]).id,
-                user_id                  = User.objects.get(name=row[4]).id,
+                user_id                  = User.objects.filter(name=row[4]).first().id,
                 price_per_hour           = Decimal(row[5]),
                 area                     = float(row[6]),
                 floor                    = int(row[7]),
@@ -117,6 +117,8 @@ def gen_places():
                 delegate_place_image_url = row[14],
                 surcharge_rule           = int(row[15]),
                 title                    = row[20],
+                latitude                 = float(row[21]),
+                longtitude               = float(row[22]),
                 ) for row in data_reader if row[0]
             ])
 
