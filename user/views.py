@@ -2,6 +2,9 @@ import re
 import jwt
 import json
 import bcrypt
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from django.db import models
 from django.http import JsonResponse
@@ -15,6 +18,7 @@ from my_settings import SECRET, ALGORITHM
 from .models import (
                     User,
                     PlaceMark,
+                    SMSAuthRequest,
                     )
 from place.models import (
                             Place,
@@ -42,12 +46,6 @@ class SignUpView(View):
             if not re.match(check_password, data['password']):
                 return JsonResponse({'message':'INVALID_PASSWORD'}, status=400)
             
-            #if not re.match(check_password, data['password2']):
-            #    return JsonResponse({'message':'PASSWORD1_ERROR'}, status=400)
-
-            #if data['password'] != data['password2']:
-            #    return JsonResponse({'message':'PASSWORD_INCONSISTENCY'}, status=400)
-            
             user = User.objects.create(
                 name          = data['name'],
                 email         = data['email'],
@@ -71,7 +69,6 @@ class SignInView(View):
             if not users.exists():
                 return JsonResponse({'message':'INVALITD_USER'}, status=400)
 
-            #user_data = User.objects.get(email=data['email'])
             user_data = users.get()
 
             if bcrypt.checkpw(data['password'].encode('utf-8'), user_data.password.encode('utf-8')):
@@ -133,5 +130,25 @@ class GetMarkedPlacesView(View):
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
 
+class SMSCheckView(APIView):
+    def post(self, request):
+        try:
+            phone_number = request.data['phone_number']
+            SMSAuthRequest.objects.update_or_create(phone_number=phone_number)
+            
+            return Response({'message': 'OK'})
 
+        except KeyError:
+            return Response({'message': 'Bad Request'}, status=400)
+
+    def get(self, request):
+        try:
+            phone_number = request.query_params['phone_number']
+            auth_number  = request.query_params['auth_number']
+            result       = SMSAuthRequest.check_auth_number(phone_number, auth_number)
+
+            return Response({'message': 'OK', 'result': result})
+
+        except KeyError:
+            return Response({'message': 'Bad Request'}, status=400)
 

@@ -4,6 +4,7 @@ from .views      import (
                         SignInView,
                         MarkingPlaceView,
                         GetMarkedPlacesView,
+                        SMSCheckView,
                         )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('/signin', SignInView.as_view()),
     path('/placemark', MarkingPlaceView.as_view()),
     path('/placemarks', GetMarkedPlacesView.as_view()),
+    path('/authSMS', SMSCheckView.as_view()),
 ]
