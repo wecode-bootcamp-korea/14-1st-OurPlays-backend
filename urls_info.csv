@@ -1,0 +1,13 @@
+METHOD,URL,description
+POST,/user/signin,로그인
+POST,/user/signup,회원가입
+,,
+GET,/place/places,모든 공간 정보
+GET,/place/places/[int:place_id],지정 공간 정보
+GET,/place/places/[str:category],category별 공간 정보
+POST,/place,공간 추가
+PATCH,/place/[int:place_id],공간 수정
+DELETE,/place/[int:place_id],공간 삭제
+,,
+POST,/reservation,예약 추가
+DELETE,/reservation/[int:reservation_id],예약 취소
