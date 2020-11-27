@@ -2,6 +2,9 @@ import re
 import jwt
 import json
 import bcrypt
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from django.db import models
 from django.http import JsonResponse
@@ -15,6 +18,7 @@ from my_settings import SECRET, ALGORITHM
 from .models import (
                     User,
                     PlaceMark,
+                    SMSAuthRequest,
                     )
 from place.models import (
                             Place,
@@ -133,5 +137,23 @@ class GetMarkedPlacesView(View):
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
 
+class SMSCheckView(APIView):
+    def post(self, request):
+        try:
+            p_num = request.data['phone_number']
+        except KeyError:
+            return Response({'message': 'Bad Request'}, status=400)
+        else:
+            SMSAuthRequest.objects.update_or_create(phone_number=p_num)
+            return Response({'message': 'OK'})
 
+    def get(self, request):
+        try:
+            p_num = request.query_params['phone_number']
+            a_num = request.query_params['auth_number']
+        except KeyError:
+            return Response({'message': 'Bad Request'}, status=400)
+        else:
+            result = SMSAuthRequest.check_auth_number(p_num, a_num)
+            return Response({'message': 'OK', 'result': result})
 

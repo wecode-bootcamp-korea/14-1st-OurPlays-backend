@@ -321,10 +321,12 @@ class RemoveRatingView(View):
     @transaction.atomic
     @check_auth_decorator
     def delete(self, request, rating_id):
+        from django.http import HttpResponse
         try:
             Rating.objects.filter(id = rating_id).delete()
 
-            return JsonResponse({"message":"SUCCESS"}, status=204)
+            return JsonResponse({"message":"SUCCESS"}, status=201)
+            #return HttpResponse({"message":"NO_CONTENT"}, status=204)
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
