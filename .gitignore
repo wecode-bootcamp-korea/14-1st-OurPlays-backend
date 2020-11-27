@@ -679,4 +679,8 @@ MigrationBackup/
 
 # End of https://www.toptal.com/developers/gitignore/api/vim,pycharm,visualstudio,macos,linux,django,venvv
 
-logs
+# Team folder and file
+logs/
+data/
+*.csv
+db_uploader.py
