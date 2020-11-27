@@ -46,12 +46,6 @@ class SignUpView(View):
             if not re.match(check_password, data['password']):
                 return JsonResponse({'message':'INVALID_PASSWORD'}, status=400)
             
-            #if not re.match(check_password, data['password2']):
-            #    return JsonResponse({'message':'PASSWORD1_ERROR'}, status=400)
-
-            #if data['password'] != data['password2']:
-            #    return JsonResponse({'message':'PASSWORD_INCONSISTENCY'}, status=400)
-            
             user = User.objects.create(
                 name          = data['name'],
                 email         = data['email'],
@@ -75,7 +69,6 @@ class SignInView(View):
             if not users.exists():
                 return JsonResponse({'message':'INVALITD_USER'}, status=400)
 
-            #user_data = User.objects.get(email=data['email'])
             user_data = users.get()
 
             if bcrypt.checkpw(data['password'].encode('utf-8'), user_data.password.encode('utf-8')):
@@ -140,20 +133,22 @@ class GetMarkedPlacesView(View):
 class SMSCheckView(APIView):
     def post(self, request):
         try:
-            p_num = request.data['phone_number']
+            phone_number = request.data['phone_number']
+            SMSAuthRequest.objects.update_or_create(phone_number=phone_number)
+            
+            return Response({'message': 'OK'})
+
         except KeyError:
             return Response({'message': 'Bad Request'}, status=400)
-        else:
-            SMSAuthRequest.objects.update_or_create(phone_number=p_num)
-            return Response({'message': 'OK'})
 
     def get(self, request):
         try:
-            p_num = request.query_params['phone_number']
-            a_num = request.query_params['auth_number']
+            phone_number = request.query_params['phone_number']
+            auth_number  = request.query_params['auth_number']
+            result       = SMSAuthRequest.check_auth_number(phone_number, auth_number)
+
+            return Response({'message': 'OK', 'result': result})
+
         except KeyError:
             return Response({'message': 'Bad Request'}, status=400)
-        else:
-            result = SMSAuthRequest.check_auth_number(p_num, a_num)
-            return Response({'message': 'OK', 'result': result})
 

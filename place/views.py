@@ -321,12 +321,10 @@ class RemoveRatingView(View):
     @transaction.atomic
     @check_auth_decorator
     def delete(self, request, rating_id):
-        from django.http import HttpResponse
         try:
             Rating.objects.filter(id = rating_id).delete()
 
             return JsonResponse({"message":"SUCCESS"}, status=201)
-            #return HttpResponse({"message":"NO_CONTENT"}, status=204)
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
@@ -376,27 +374,4 @@ class RatingsView(View):
 
         except KeyError:
             return JsonResponse({"message":"KEY_ERROR"}, status=400)
-'''
-class SearchView(View):    
-    @check_auth_decorator
-    def get(self, request, search_text):
-        search_info = []
 
-        places = Place.objects.filter(
-            Q(title__contains = search_text) |
-            Q(description__contains = search_text) |
-            Q(region__name__contains = search_text) |
-            Q(category__name__contains = search_text)
-            ).all()
-
-        search_info = [
-                {
-                    'place_id'      : place.id,
-                    'category'      : place.category.name,
-                    'title'         : place.title,
-                    'region'        : place.region.name,
-                    'starpoint_avg' : Rating.objects.filter(place_id = place.id).aggregate(Avg('starpoint'))
-                } for place in places]
-            
-        return JsonResponse({"message":"SUCCESS", "information":search_info},status=200)
-'''
