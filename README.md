@@ -52,6 +52,7 @@ https://www.youtube.com/watch?v=aPFeH9Arw9Q
  
  ### Back-end
  - Database Modeling
+  ![ourplays_aqueryrtool modeling](https://user-images.githubusercontent.com/70853165/105473326-585f4380-5ce0-11eb-8b1d-945ea1774a55.png)
  - 회원가입 : bcrpyt (DB에 암호화된 비밀번호 저장)
  - 로그인 : bcrpyt 비밀번호 대조 JWT(토큰생성)
  - 로그인 확인 데코레이터 :JWT (토큰 복호화)
