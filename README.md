@@ -3,6 +3,8 @@
 ## Team OurPlays
 > 'Hourplace' 라는 사이트를 모티브해서 프로젝트르 진행하는데, <br> 
 프로젝트기간동안 우리들끼리 즐겨보자라는 의미에서 'Ourplays' 라고 팀명을 짓게 되었습니다.
+<img width="1310" alt="ourplays img" src="https://user-images.githubusercontent.com/70853165/105474202-5fd31c80-5ce1-11eb-9cfe-07b3db6615c6.png">
+
 
 ## ✅ 프로젝트 소개 
 > 촬영 장소를 렌탈 해주는 플랫폼을 모티브로 개발 프로젝트를 진행했습니다.<br>
@@ -19,10 +21,10 @@
 - 김영환
 - 김영주
 
-## 프로젝트 기간
+## ✅ 프로젝트 기간
 2020.11.16 ~ 2020.11.27
 
-## 프로젝트 영상
+## ✅ 프로젝트 영상
 https://www.youtube.com/watch?v=aPFeH9Arw9Q
 
  ## ✅ 기술 스택
